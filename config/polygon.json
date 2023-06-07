@@ -1,0 +1,90 @@
+{
+    "reference_point": {
+        "roads": [],
+        "radar_filter_range": [],
+        "camera_filter_range": [],
+        "measure_filter_range": [
+            {
+                "road_number": "road_1",
+                "points": [
+                    [
+                        370,
+                        1014
+                    ],
+                    [
+                        742,
+                        1028
+                    ],
+                    [
+                        816,
+                        506
+                    ],
+                    [
+                        714,
+                        502
+                    ]
+                ],
+                "stop_line": [
+                    [
+                        [
+                            370,
+                            1014
+                        ],
+                        [
+                            742,
+                            1028
+                        ]
+                    ]
+                ]
+            },
+            {
+                "road_number": "road_2",
+                "points": [
+                    [
+                        1112,
+                        1042
+                    ],
+                    [
+                        1508,
+                        1070
+                    ],
+                    [
+                        1080,
+                        576
+                    ],
+                    [
+                        946,
+                        582
+                    ]
+                ],
+                "stop_line": [
+                    [
+                        [
+                            1112,
+                            1042
+                        ],
+                        [
+                            1508,
+                            1070
+                        ]
+                    ]
+                ]
+            }
+        ],
+        "collision_lines": [
+            {
+                "road_number": "line_1",
+                "points": [
+                    [
+                        336,
+                        880
+                    ],
+                    [
+                        1812,
+                        872
+                    ]
+                ]
+            }
+        ]
+    }
+}
