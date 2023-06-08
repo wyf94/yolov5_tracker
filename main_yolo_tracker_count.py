@@ -113,7 +113,7 @@ def lane_change_detect(lane_line, bboxes,  image_size):
 if __name__ == '__main__':
 
     # 读取josn文件里的lines, polygons  
-    polygon_path = "config/polygon.json" 
+    polygon_path = "config/polygon_2.json" 
     lines, polygons = read_json(polygon_path)
     multi_line = [[0] for i in range(len(lines))]
 
@@ -228,43 +228,62 @@ if __name__ == '__main__':
         # # # output_image_frame = cv2.add(output_image_frame, color_polygons_image)
     
 
-        # padding = [0, 100]
-        # size = [2048, 2448]
-        # # 各个类别穿过每条线的统计情况
-        # Line_statistics = []
+        padding = [0, 100]
+        size = [2048, 2448]
+        # 各个类别穿过每条线的统计情况
+        Line_statistics = []
         
-        # for index in range(0, len(multi_line)):
-        #     # 判断line中点加上padding之后是否超出图片范围
-        #     for i in range(0, 2):
-        #         if multi_line[index][i][0]+padding[0] >= size[1] or multi_line[index][i][0]+padding[0] <= 0:
-        #             print(" The point of lines out off range or padding out off range")
-        #         if multi_line[index][i][1]+padding[1] >= size[0] or multi_line[index][i][1]+padding[1] <= 0:
-        #             print(" The point of lines out off range or padding out off range")
+        t0 = time.time()
+        # print(multi_line)
+        # print(" len(multi_line) : ", len(multi_line))
+        
+        
+        for index in range(0, len(multi_line)):
+            # 判断line中点加上padding之后是否超出图片范围
+            for i in range(0, 2):
+                if multi_line[index][i][0]+padding[0] >= size[1] or multi_line[index][i][0]+padding[0] <= 0:
+                    print(" The point of lines out off range or padding out off range")
+                if multi_line[index][i][1]+padding[1] >= size[0] or multi_line[index][i][1]+padding[1] <= 0:
+                    print(" The point of lines out off range or padding out off range")
 
-        #     # 周期性统计各个类别穿过每条线的情况
-        #     polygon_mask_blue_and_yellow, polygon_color_image = traffic_count.line2polygon(multi_line[index], padding, size, True)
-        
-        #     up_count[index], down_count[index] = traffic_count.traffic_count(list_bboxs, size,  list_track_classes,  polygon_mask_blue_and_yellow, 
-        #                                                                      blue_list[index], yellow_list[index],  up_count[index], down_count[index])
-        #     output_image_frame = cv2.add(output_image_frame, polygon_color_image)
+            t0 = time.time()
+            # 周期性统计各个类别穿过每条线的情况
+            polygon_mask_blue_and_yellow, polygon_color_image = traffic_count.line2polygon(multi_line[index], padding, size, False)
+            t1 = time.time()
+
+            # print("list_bboxs:", list_bboxs)
+            up_count[index], down_count[index] = traffic_count.traffic_count(list_bboxs, size,  list_track_classes,  polygon_mask_blue_and_yellow, 
+                                                                             blue_list[index], yellow_list[index],  up_count[index], down_count[index])
+            output_image_frame = cv2.add(output_image_frame, polygon_color_image)
+            t2 = time.time()
+            # print("time 0:", int((t1-t0)*1000))
+            # print("time 1:", int((t2-t1)*1000))
             
-        # for index in range(0, len(multi_line)):
-        #         # cv_image = cv2.add(cv_image, polygon_color_image)
-        #         ptStart = (multi_line[index][0][0], multi_line[index][0][1])
-        #         ptEnd = (multi_line[index][1][0], multi_line[index][1][1])
-        #         cv2.line(im, ptStart, ptEnd, color=roi_color[index], thickness=5)
+            
+        t1 = time.time()
+        for index in range(0, len(multi_line)):
+                # cv_image = cv2.add(cv_image, polygon_color_image)
+                
+                ptStart = (multi_line[index][0][0], multi_line[index][0][1])
+                ptEnd = (multi_line[index][1][0], multi_line[index][1][1])
+                cv2.line(output_image_frame, ptStart, ptEnd, color=roi_color[index], thickness=5)
 
-        #         text_draw = 'line' + str(index) + ': \n' 
-        #         for i in range(0, len(list_track_classes)):
-        #             text_draw = text_draw + list_track_classes[i] + ': ' + str(up_count[index][i] + down_count[index][i]) + '\n'
-        #         for i, line in enumerate(text_draw.split('\n')):
-        #             dy = 30
-        #             draw_text_postion = (multi_line[index][0][0], (multi_line[index][0][1] - 180 + dy*i))
-        #             im = cv2.putText(img=im, text=line,
-        #                                 org=draw_text_postion,
-        #                                 fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-        #                                 fontScale=1, color=(255, 0, 0), thickness=2)
+                text_draw = 'line' + str(index) + ': \n' 
+                for i in range(0, len(list_track_classes)):
+                    text_draw = text_draw + list_track_classes[i] + ': ' + str(up_count[index][i] + down_count[index][i]) + '\n'
+                for i, line in enumerate(text_draw.split('\n')):
+                    dy = 30
+                    draw_text_postion = (multi_line[index][0][0], (multi_line[index][0][1] - 180 + dy*i))
+                    im = cv2.putText(img=output_image_frame, text=line,
+                                        org=draw_text_postion,
+                                        fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                                        fontScale=1, color=(255, 0, 0), thickness=2)
 
+        t2 = time.time()
+        
+        # print("time 0:", int((t1-t0)*1000))
+        # print("time 1:", int((t2-t1)*1000))
+        # print("--------------")
         video_writer.write(output_image_frame)
 
         result_image = cv2.resize(output_image_frame, (0, 0), fx=0.5, fy=0.5, interpolation=cv2.INTER_NEAREST)

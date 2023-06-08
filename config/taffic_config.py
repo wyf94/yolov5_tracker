@@ -84,10 +84,18 @@ CLASSES_LIST = [
 TRACK_CLASSES_LIST = [
     'bicycle',
     'car',
-    'motorcycle',
+    'motorbike',
     'bus',
     'truck',
 ]
+
+# TRACK_CLASSES_LIST = [
+#     1,
+#     2,
+#     3,
+#     5,
+#     7,
+# ]
 
 TRACK_CLASSES_LEN = [
     1, 
